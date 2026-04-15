@@ -85,4 +85,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	TSubclassOf<ARocket> RocketTemplate;
+
+	float BoostValue = 0.5f;
 };

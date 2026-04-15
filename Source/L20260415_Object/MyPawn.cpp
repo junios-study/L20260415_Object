@@ -66,7 +66,7 @@ void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AddMovementInput(GetActorForwardVector());
+	AddMovementInput(GetActorForwardVector(), BoostValue);
 
 	Left->AddRelativeRotation(FRotator(0, 0, DeltaTime * 4800.0f));
 	Right->AddRelativeRotation(FRotator(0, 0, DeltaTime * 4800.0f));
@@ -84,7 +84,7 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		UIC->BindAction(IA_Rotate, ETriggerEvent::Triggered, this, &AMyPawn::Rotate);
 		UIC->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyPawn::Fire);
 		UIC->BindAction(IA_Boost, ETriggerEvent::Triggered, this, &AMyPawn::Boost);
-		UIC->BindAction(IA_Boost, ETriggerEvent::Canceled, this, &AMyPawn::Unboost);
+		UIC->BindAction(IA_Boost, ETriggerEvent::Completed, this, &AMyPawn::Unboost);
 
 	}
 }
@@ -105,9 +105,13 @@ void AMyPawn::Fire(const FInputActionValue& Value)
 
 void AMyPawn::Boost(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Boost %d"), Value.Get<bool>());
+	BoostValue = 1.0f;
 }
 
 void AMyPawn::Unboost(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Unboost"));
+	BoostValue = 0.5f;
 }
 
