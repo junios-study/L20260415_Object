@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include <EnhancedInputLibrary.h>
+
+#include "InputAction.h"
+
 #include "MyPawn.generated.h"
+
 
 class UBoxComponent;
 class UStaticMeshComponent;
@@ -12,6 +17,8 @@ class UFloatingPawnMovement;
 class UArrowComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UInputAction;
+class ARocket;
 
 UCLASS()
 class L20260415_OBJECT_API AMyPawn : public APawn
@@ -32,6 +39,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void Rotate(const FInputActionValue& Value);
+
+	void Fire(const FInputActionValue& Value);
+
+	void Boost(const FInputActionValue& Value);
+
+	void Unboost(const FInputActionValue& Value);
 
 	//UBoxComponent* Box;
 
@@ -58,4 +73,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCameraComponent> Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Rotate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Fire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Boost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+	TSubclassOf<ARocket> RocketTemplate;
 };

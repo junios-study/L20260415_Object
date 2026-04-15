@@ -8,6 +8,10 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "EnhancedInputComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Rocket.h"
+
 
 // Sets default values
 AMyPawn::AMyPawn()
@@ -43,7 +47,11 @@ AMyPawn::AMyPawn()
 
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 
-
+	static ConstructorHelpers::FClassFinder<ARocket> BP_Rocket(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/BP_Rocket.BP_Rocket_C'"));
+	if (BP_Rocket.Succeeded())
+	{
+		RocketTemplate = BP_Rocket.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -70,5 +78,36 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* UIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (UIC)
+	{
+		UIC->BindAction(IA_Rotate, ETriggerEvent::Triggered, this, &AMyPawn::Rotate);
+		UIC->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyPawn::Fire);
+		UIC->BindAction(IA_Boost, ETriggerEvent::Triggered, this, &AMyPawn::Boost);
+		UIC->BindAction(IA_Boost, ETriggerEvent::Canceled, this, &AMyPawn::Unboost);
+
+	}
+}
+
+void AMyPawn::Rotate(const FInputActionValue& Value)
+{
+	FVector2D Rot = Value.Get<FVector2D>();
+	Rot = Rot * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * 60.0f;
+
+	AddActorLocalRotation(FRotator(Rot.Y, 0, Rot.X));
+
+}
+
+void AMyPawn::Fire(const FInputActionValue& Value)
+{
+	GetWorld()->SpawnActor<ARocket>(RocketTemplate, Arrow->K2_GetComponentToWorld());
+}
+
+void AMyPawn::Boost(const FInputActionValue& Value)
+{
+}
+
+void AMyPawn::Unboost(const FInputActionValue& Value)
+{
 }
 

@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
+class UInputMappingContext;
+
 /**
  * 
  */
@@ -16,4 +18,10 @@ class L20260415_OBJECT_API AMyPlayerController : public APlayerController
 public:
 
 	AMyPlayerController();
+
+	virtual void OnPossess(APawn* aPawn) override;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputMappingContext> InputMapping;
+
 };
